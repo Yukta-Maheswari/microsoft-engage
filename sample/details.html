@@ -1,0 +1,191 @@
+<html>
+    <head>
+        <title>Details</title>
+          <style>
+            body{
+              font-family: "Montserrat";
+              text-align: center;
+              padding:180px;
+              background-image: linear-gradient(#82A284, #fff);
+              
+            }
+            #borders{            
+              border-style: solid;
+              padding-bottom:30px;
+              padding-left:0px;
+            }
+          label {
+            display: inline-block;
+            width: 80px;
+          }
+          input,
+          select {
+            width: 120px;
+          }
+          /* Boxes*/
+          #Namebox{
+            margin-left:70px;
+          }
+          #Agebox{
+            margin-left:70px;
+          }
+          #Crimebox{
+            margin-left:65px;
+          }
+          #Genbox{
+            margin-left:65px;
+            
+          }
+          h2{
+            font-size:2rem;
+          }
+          label{
+            font-size:1.1rem;
+            font-weight:black;
+          }
+        </style>
+    </head>
+    <body>
+      <div id="borders">
+        <h2 >Search data of criminal</h2>
+        <label>Name</label>
+        <input id="Namebox" type="text" class="box" /><br /><br />
+        <label>Age</label> <input id="Agebox" type="text" class="box" /><br /><br />
+        <label>Last Crime</label>
+        <input id="Crimebox" type="text" class="box" /><br /><br />
+        <label>Gender</label>
+        <select id="Genbox" class="box">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select><br><br>
+  
+      
+      <button id="Insbtn" class="btn btn-outline-light">Insert</button>
+      <button id="Seabtn" class="btn btn-outline-light">Search</button>
+      <button id="Updbtn" class="btn btn-outline-light">Update</button>
+      <button id="Delbtn" class="btn btn-outline-light">Delete</button>
+    </body>
+      <!-- import and configuration  -->
+  
+      <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+  
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyB7smGe2KYELSs5qASEFJIbcEqiaTbbyUY",
+          authDomain: "fire9db-9fd77.firebaseapp.com",
+          projectId: "fire9db-9fd77",
+          storageBucket: "fire9db-9fd77.appspot.com",
+          messagingSenderId: "786968998533",
+          appId: "1:786968998533:web:a69b427af58a9988d8afec",
+        };
+  
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+  
+        import {
+          getDatabase,
+          ref,
+          get,
+          set,
+          child,
+          update,
+          remove,
+        } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-database.js";
+  
+        const db = getDatabase();
+              // References
+  
+        let namebox = document.getElementById("Namebox");
+        let agebox = document.getElementById("Agebox");
+        let crimebox = document.getElementById("Crimebox");
+        let genbox = document.getElementById("Genbox");
+  
+        let insBtn = document.getElementById("Insbtn");
+        let seaBtn = document.getElementById("Seabtn");
+        let updBtn = document.getElementById("Updbtn");
+        let delBtn = document.getElementById("Delbtn");
+  
+        // Assign Events To Buttons
+        insBtn.addEventListener("click", InsertData);
+        seaBtn.addEventListener("click", SearchData);
+        updBtn.addEventListener("click", UpdateData);
+        delBtn.addEventListener("click", DeleteData);
+  
+        // Insert Data Function
+  
+        function InsertData() {
+          console.log(namebox.value);
+          console.log(agebox.value);
+          console.log(crimebox.value);
+          console.log(genbox.value);
+          set(ref(db, "TheCriminals/" + namebox.value), {
+            NameofCrim: namebox.value,
+            Age: agebox.value,
+            Crime: crimebox.value,
+            Gender: genbox.value,
+          })
+            .then(() => {
+              alert("data stored successfully");
+            })
+            .catch((error) => {
+              alert("unsuccessful,error" + error);
+            });
+        }
+  
+        // Search Data Function
+  
+        function SearchData() {
+          const dbref = ref(db);
+  
+          get(child(dbref, "TheCriminals/" + namebox.value))
+            .then((snapshot) => {
+              if (snapshot.exists()) {
+                agebox.value = snapshot.val().Age;
+                crimebox.value = snapshot.val().Crime;
+                genbox.value = snapshot.val().Gender;
+              } else {
+                alert("No data found");
+              }
+            })
+            .catch((error) => {
+              alert("unsuccessful,error" + error);
+            });
+        }
+  
+        // Update Data Function
+  
+        function UpdateData() {
+          update(ref(db, "TheCriminals/" + namebox.value), {
+            Age: agebox.value,
+            Crime: crimebox.value,
+            Gender: genbox.value,
+          })
+            .then(() => {
+              alert("data stored successfully");
+            })
+            .catch((error) => {
+              alert("unsuccessful,error" + error);
+            });
+        }
+  
+        // Delete Data Function
+  
+        function DeleteData() {
+          remove(ref(db, "TheCriminals/" + namebox.value))
+            .then(() => {
+              alert("data removed");
+            })
+            .catch((error) => {
+              alert("unsuccessful,error" + error);
+            });
+        }
+      
+      </script>
+    </div>
+  
+    </body>
+</html>
